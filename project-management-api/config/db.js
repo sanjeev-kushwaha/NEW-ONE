@@ -1,9 +1,20 @@
-// config/db.config.js
-module.exports = {
-    HOST: "localhost",
-    USER: "your_username",
-    PASSWORD: "your_password",
-    DB: "project_management_db",
-    dialect: "postgres", // or 'mysql'
-  };
-  
+require("dotenv").config();
+const { Sequelize } = require("sequelize");
+const config = require('../config/config.json');
+
+const environment = process.env.NODE_ENV || 'development'; 
+const dbConfig = config[environment];
+
+const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
+    host: dbConfig.host,
+    dialect: dbConfig.dialect,
+  });
+
+(async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Connection has been established successfully.");
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+  }
+})();
